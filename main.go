@@ -23,5 +23,11 @@ func main() {
 	// Pass .env variables to config
 	config.SetConfig(apiKey, apiSec)
 
-	fmt.Println("Main function running...")
+	// Get the balance response from Kraken
+	balance, err := GetBalance()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println(balance)
 }
