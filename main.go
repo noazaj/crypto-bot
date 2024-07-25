@@ -16,12 +16,8 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
-	// Get .env variables
-	apiKey := os.Getenv("ApiKey")
-	apiSec := os.Getenv("ApiSec")
-
 	// Pass .env variables to config
-	config.SetConfig(apiKey, apiSec)
+	config.SetConfig(os.Getenv("KRAKEN_ID"), os.Getenv("KRAKEN_SECRET"))
 
 	// Get the balance response from Kraken
 	balance, err := GetBalance()

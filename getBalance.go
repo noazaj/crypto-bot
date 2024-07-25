@@ -13,10 +13,8 @@ import (
 	"github.com/noazaj/crypto-bot/config"
 )
 
-var (
+const (
 	apiURL = "https://api.kraken.com"
-	apiKey = config.ApiKey
-	apiSec = config.ApiSec
 )
 
 func krakenRequest(uriPath string, data url.Values, key string, secret []byte) (*http.Request, error) {
@@ -34,13 +32,22 @@ func krakenRequest(uriPath string, data url.Values, key string, secret []byte) (
 }
 
 func GetBalance() (string, error) {
+	apiKey := config.ApiKey
+	apiSec := config.ApiSec
+
+	if apiKey == "" || apiSec == "" {
+		return "", fmt.Errorf("API key or secret not set")
+	}
+
 	timeData := strconv.FormatInt(time.Now().UnixNano()/int64(time.Millisecond), 10)
 	data := url.Values{}
 	data.Add("nonce", timeData)
+
 	resp, err := krakenRequest("/0/private/Balance", data, apiKey, []byte(apiSec))
 	if err != nil {
 		return "", fmt.Errorf("error in getting response: %s", err)
 	}
+	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
